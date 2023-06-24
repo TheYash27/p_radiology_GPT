@@ -2,7 +2,7 @@ import { initializeApp } from 'firebase/app'
 import { getDatabase, ref, push, get, remove } from 'firebase/database'
 
 import { Configuration, OpenAIApi } from 'openai'
-require("dotenv").config({ path: ".env" })
+require("dotenv").config()
 
 const configuration = new Configuration({
     apiKey: process.env.OPENAI_API_KEY,
