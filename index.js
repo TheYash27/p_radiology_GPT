@@ -13,7 +13,7 @@ const appSettings = {
     databaseURL: 'https://gpt-4-chatbot-default-rtdb.asia-southeast1.firebasedatabase.app/'
 }
 
-const app = initializeApp(appSettings)
+const app = new initializeApp(appSettings)
 
 const database = getDatabase(app)
 
