@@ -7,8 +7,6 @@ const configuration = new Configuration({
     apiKey: import.meta.env.VITE_OPENAI_API_KEY,
 })
 
-console.log('')
-
 const openai = new OpenAIApi(configuration)
 
 const appSettings = {
