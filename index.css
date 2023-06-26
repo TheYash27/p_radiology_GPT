@@ -137,6 +137,17 @@ main {
     border-top-left-radius: 0;  
 }
 
+.track-changes-req {
+    padding: 1em;
+    margin: 1em auto;
+    max-width: 260px; 
+    color: blue;
+    min-width: 100%;
+    border-radius: var(--border-rad-lg);
+    background: whitesmoke;
+    border-top-left-radius: 0;  
+}
+
 .chatbot-input-container {
     display: flex;
 }

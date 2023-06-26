@@ -22,6 +22,16 @@ const conversationInDb = ref(database)
 const chatbotConversation = document.getElementById('chatbot-conversation')
 const userInput = document.getElementById('user-input')
 
+userInput.addEventListener("focus", function() {
+    userInput.setAttribute("rows", 11)
+    userInput.setAttribute("cols", 30)
+});
+  
+userInput.addEventListener("blur", function() {
+    userInput.removeAttribute("rows")
+    userInput.removeAttribute("cols")
+});
+
 let AIResponse = ''
 const editableSpeechBubble = document.createElement('div')
 editableSpeechBubble.classList.add('speech', 'speech-human')
@@ -161,16 +171,13 @@ function highlightDifferentWords(str1, str2) {
     const words1 = str1.split(" ")
     const words2 = str2.split(" ")
 
-    let count = 0
     let difinreq = ''
     let difinres = ''
     
-
     // Iterate over the words in the first string
     for (let i = 0; i < words1.length; i++) {
         // Check if the word exists in the second string
         if (!words2.includes(words1[i])) {
-            count++  
             difinres += ` ${words1[i]}`
         }
     }
@@ -183,7 +190,6 @@ function highlightDifferentWords(str1, str2) {
     for (let i = 0; i < words2.length; i++) {
         // Check if the word exists in the first string
         if (!words1.includes(words2[i])) {
-            count++
             difinreq += ` ${words2[i]}`
         }
     }
@@ -191,6 +197,20 @@ function highlightDifferentWords(str1, str2) {
         role: 'assistant',
         content: difinreq
     })
+
+    const sentences1 = str1.split(".")
+    const sentences2 = str2.split(".")
+    let difinstr = ''
+
+    for (let i = 0; i < sentences1.length; i++) {
+        if (sentences2.includes(sentences1[i])) {
+            for (let j = 0; j < sentences2.length; j++) {
+                if (sentences2[j].trim() !== sentences1[i].trim()) {
+                    difinstr += `Sentence ${j} in expert answer moved to Sentence ${i} in AI answer\n`
+                }
+            }                
+        }
+    }
     
     const changesInResponse = document.createElement('div')
     changesInResponse.classList.add('track-changes-res')
@@ -201,7 +221,12 @@ function highlightDifferentWords(str1, str2) {
     changesInRequest.classList.add('track-changes-req')
     chatbotConversation.appendChild(changesInRequest)
     changesInRequest.textContent = difinreq
-  
+
+    const changesInStructure = document.createElement('div')
+    changesInStructure.classList.add('track-changes-str')
+    chatbotConversation.appendChild(changesInStructure)
+    changesInStructure.textContent = difinstr
+
 }
 
 renderConversationFromDb()
