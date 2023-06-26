@@ -152,14 +152,18 @@ main {
     display: flex;
 }
 
-input[type="text"], button{
+button {
     background-color: transparent;
     border: 1px solid var(--medium-light-text);
     border-radius: 15px;
     padding: 1em;
 }
 
-input[type="text"] {
+#user-input {
+    background-color: transparent;
+    border: 1px solid var(--medium-light-text);
+    border-radius: 15px;
+    padding: 1em;
     color: #fcfcfc;
     width: 100%;
     border-right: 0; 
