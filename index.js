@@ -24,12 +24,10 @@ const userInput = document.getElementById('user-input')
 
 userInput.addEventListener("focus", function() {
     userInput.setAttribute("rows", 11)
-    userInput.setAttribute("cols", 30)
 });
   
 userInput.addEventListener("blur", function() {
     userInput.removeAttribute("rows")
-    userInput.removeAttribute("cols")
 });
 
 let AIResponse = ''
