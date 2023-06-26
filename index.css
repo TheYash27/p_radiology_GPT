@@ -32,7 +32,6 @@ main {
     display: flex;
     flex-direction: column;
     padding: 1em;  
-    overflow: hidden;
 }
 
 .chatbot-container > * {
@@ -170,8 +169,6 @@ button {
     border-right: 0; 
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
-    resize: none;
-    overflow: auto;
 }
 
 .submit-btn {
