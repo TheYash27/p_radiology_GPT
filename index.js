@@ -203,8 +203,9 @@ function highlightDifferentWords(str1, str2) {
     for (let i = 0; i < sentences1.length; i++) {
         if (sentences2.includes(sentences1[i])) {
             for (let j = 0; j < sentences2.length; j++) {
-                if (sentences2[j].trim() !== sentences1[i].trim()) {
-                    difinstr += `Sentence ${j} in expert answer moved to Sentence ${i} in AI answer\n`
+                if (sentences2[j].trim() === sentences1[i].trim()) {
+                    difinstr += `Sentence ${j} in expert answer moved to Sentence ${i} in AI answer\n`;
+                    break
                 }
             }                
         }
