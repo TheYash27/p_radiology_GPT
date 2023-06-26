@@ -204,7 +204,7 @@ function highlightDifferentWords(str1, str2) {
         if (sentences2.includes(sentences1[i])) {
             for (let j = 0; j < sentences2.length; j++) {
                 if (sentences2[j].trim() === sentences1[i].trim()) {
-                    difinstr += `Sentence ${j} in expert answer moved to Sentence ${i} in AI answer\n`;
+                    difinstr += `Sentence ${(j + 1)} in expert answer moved to Sentence ${(i + 1)} in AI answer\n`;
                     break
                 }
             }                
