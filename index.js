@@ -23,7 +23,7 @@ const chatbotConversation = document.getElementById('chatbot-conversation')
 const userInput = document.getElementById('user-input')
 
 userInput.addEventListener("focus", function() {
-    userInput.setAttribute("rows", 7)
+    userInput.setAttribute("rows", 6)
 });
   
 userInput.addEventListener("blur", function() {
