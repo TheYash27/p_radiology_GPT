@@ -24,11 +24,11 @@ const userInput = document.getElementById('user-input')
 
 userInput.addEventListener("focus", function() {
     userInput.setAttribute("rows", 10)
-});
+})
   
 userInput.addEventListener("blur", function() {
     userInput.removeAttribute("rows")
-});
+})
 
 const conversationArr = []
 
@@ -57,7 +57,7 @@ var simplemde = new SimpleMDE({
       "|",
       "guide"
     ]
-  });
+  })
   
 const instructionObj = {
     role: 'system',
