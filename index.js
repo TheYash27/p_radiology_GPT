@@ -23,18 +23,42 @@ const chatbotConversation = document.getElementById('chatbot-conversation')
 const userInput = document.getElementById('user-input')
 
 userInput.addEventListener("focus", function() {
-    userInput.setAttribute("rows", 6)
+    userInput.setAttribute("rows", 10)
 });
   
 userInput.addEventListener("blur", function() {
     userInput.removeAttribute("rows")
 });
 
+const conversationArr = []
+
 let AIResponse = ''
 const editableSpeechBubble = document.createElement('div')
 editableSpeechBubble.classList.add('speech', 'speech-human')
 editableSpeechBubble.setAttribute("contenteditable", true)
 
+var simplemde = new SimpleMDE({
+    element: document.getElementById("markdown-editor-textarea"),
+    toolbar: [
+      "bold",
+      "italic",
+      "heading",
+      "|",
+      "quote",
+      "unordered-list",
+      "ordered-list",
+      "|",
+      "link",
+      "image",
+      "|",
+      "preview",
+      "side-by-side",
+      "fullscreen",
+      "|",
+      "guide"
+    ]
+  });
+  
 const instructionObj = {
     role: 'system',
     content: `
@@ -45,6 +69,7 @@ const instructionObj = {
     while strictly following the report template provided, delimited with
     "####" characters.
     Make sure to retain the chronological order of the paragraphs specific to different parts of the knee, delimited with "###" characters, in the "Findings" section.
+    Make the phrases "MRI of the [side] knee", "Clinical History", "Technique", "Findings", and "Impression", bold in your detailed report.
     Do not make any suggestions in the "Findings" section.
     Do not include in your detailed report whatever knee structures
     have not been explicitly mentioned in the short summary.
@@ -53,7 +78,7 @@ const instructionObj = {
     ####
     MRI of the [side] knee
     
-    Clinical history:
+    Clinical History:
     
     Technique: Multiplanar, multiecho MRI of the [side] knee
     
@@ -80,8 +105,14 @@ const instructionObj = {
     `
 }
 
+localStorage.setItem("instructionObj", instructionObj)
+
 document.addEventListener('submit', (e) => {
     e.preventDefault()
+    localStorage.setItem("userInput", {
+        role: 'user',
+        content: userInput.value
+    })
     push(conversationInDb, {
         role: 'user',
         content: userInput.value
@@ -94,29 +125,25 @@ document.addEventListener('submit', (e) => {
     userInput.value = ''
 })
 
-function fetchReply() {
-    get(conversationInDb).then(async (snapshot) => {
-        if (snapshot.exists()) {
-            const conversationArr = Object.values(snapshot.val())
-            conversationArr.unshift(instructionObj)
-            const response = await openai.createChatCompletion({
-                model: 'gpt-3.5-turbo',
-                messages: conversationArr,
-                temperature: 0.37,
-                presence_penalty: 0.37,
-                frequency_penalty: -0.37,
-                max_tokens: 400
-            })
-            AIResponse = response.data.choices[0].message.content 
-            push(conversationInDb, response.data.choices[0].message)
-            renderTypewriterText(response.data.choices[0].message.content)
-            chatbotConversation.appendChild(editableSpeechBubble)
-            editableSpeechBubble.textContent = response.data.choices[0].message.content
-        }
-        else {
-            console.log('No data available')
-        }
+async function fetchReply() {
+    let system_msg_obj = localStorage.getItem("instructionObj")
+    conversationArr.push(system_msg_obj)
+    let user_input_obj = localStorage.getItem("userInput")
+    conversationArr.push(user_input_obj) 
+    const response = await openai.createChatCompletion({
+        model: 'gpt-3.5-turbo',
+        messages: conversationArr,
+        temperature: 0.37,
+        presence_penalty: 0.37,
+        frequency_penalty: -0.37,
+        max_tokens: 400
     })
+    AIResponse = response.data.choices[0].message.content
+    localStorage.setItem("AIResponse", response.data.choices[0].message) 
+    push(conversationInDb, response.data.choices[0].message)
+    renderTypewriterText(response.data.choices[0].message.content)
+    chatbotConversation.appendChild(editableSpeechBubble)
+    editableSpeechBubble.textContent = response.data.choices[0].message.content
 }
 
 function renderTypewriterText(text) {
@@ -135,12 +162,16 @@ function renderTypewriterText(text) {
 }
 
 document.getElementById('clear-btn').addEventListener('click', () => {
-    remove(conversationInDb)
+    localStorage.clear()
     chatbotConversation.innerHTML = '<div class="speech speech-ai">How can I help you?</div>'
     userInput.value = ''
 })
 
 document.getElementById('compare-btn').addEventListener('click', () => {
+    conversationArr.push({
+        role: 'user',
+        content: editableSpeechBubble.textContent
+    })
     push(conversationInDb, {
         role: 'user',
         content: editableSpeechBubble.textContent
@@ -149,18 +180,14 @@ document.getElementById('compare-btn').addEventListener('click', () => {
 })
 
 function renderConversationFromDb(){
-    get(conversationInDb).then(async (snapshot)=>{
-        if(snapshot.exists()) {
-            Object.values(snapshot.val()).forEach(dbObj => {
-                const newSpeechBubble = document.createElement('div')
-                newSpeechBubble.classList.add(
-                    'speech',
-                    `speech-${dbObj.role === 'user' ? 'human' : 'ai'}`
-                    )
-                chatbotConversation.appendChild(newSpeechBubble)
-                newSpeechBubble.textContent = dbObj.content
-            })
-        }
+    conversationArr.forEach(convarrObj => {
+        const newSpeechBubble = document.createElement('div')
+        newSpeechBubble.classList.add(
+            'speech',
+            `speech-${convarrObj.role === 'user' ? 'human' : 'ai'}`
+        )
+        chatbotConversation.appendChild(newSpeechBubble)
+        newSpeechBubble.textContent = convarrObj.content
     })
 }
 
@@ -179,10 +206,6 @@ function highlightDifferentWords(str1, str2) {
             difinres += ` ${words1[i]}`
         }
     }
-    push(conversationInDb, {
-        role: 'assistant',
-        content: difinres
-    })
 
     // Iterate over the words in the second string
     for (let i = 0; i < words2.length; i++) {
@@ -191,10 +214,6 @@ function highlightDifferentWords(str1, str2) {
             difinreq += ` ${words2[i]}`
         }
     }
-    push(conversationInDb, {
-        role: 'assistant',
-        content: difinreq
-    })
 
     const sentences1 = str1.split(".")
     const sentences2 = str2.split(".")

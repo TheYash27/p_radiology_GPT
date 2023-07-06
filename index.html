@@ -1,7 +1,18 @@
 <!doctype html>
 <html>
 
-	<head><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
+	<head>
+		<meta charset="UTF-8">
+  		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="./sparksuite-simplemde-markdown-editor-6abda7a/debug/simplemde.css">
+		<link rel="stylesheet" href="./sparksuite-simplemde-markdown-editor-6abda7a/dist/simplemde.min.css">
+		<link rel="stylesheet" href="./sparksuite-simplemde-markdown-editor-6abda7a/src/css/simplemde.css">
+		<script src="./sparksuite-simplemde-markdown-editor-6abda7a/debug/simplemde.debug.js"></script>		  
+		<script src="./sparksuite-simplemde-markdown-editor-6abda7a/debug/simplemde.js"></script>		  
+		<script src="./sparksuite-simplemde-markdown-editor-6abda7a/dist/simplemde.min.js"></script>
+		<script src="./sparksuite-simplemde-markdown-editor-6abda7a/src/js/codemirror/tablist.js"></script>		  
+		<script src="./sparksuite-simplemde-markdown-editor-6abda7a/src/js/simplemde.js"></script>		  		  
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
 		<title>Radiology-GPT</title>
 		<link rel="stylesheet" href="index.css">
 		<link rel="preconnect" href="https://fonts.googleapis.com">
@@ -36,6 +47,9 @@
 						>
 					</button>
 				</form>
+			</section>
+			<section class="response-container">
+				<textarea id="markdown-editor-textarea"></textarea>
 			</section>
 		</main>
 		<script type="module" src="index.js"></script>
